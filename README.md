@@ -147,63 +147,7 @@ Calling initializer method ... ModEntry
 Finished mod initialization ...
 ```
 
-### Building from source
 
-Prerequisites:
-
-- .NET SDK 10 or compatible SDK for the target game build.
-- Python 3 for the static verification script.
-- Local Slay the Spire 2 assemblies copied into `references/`:
-  - `sts2.dll`
-  - `GodotSharp.dll`
-
-Do not redistribute the game assemblies. See `references/README.md`.
-
-Build:
-
-```sh
-python3 tests/verify_keyboard_bridge.py
-dotnet build src/Sts2KeyboardControllerBridge.csproj -c Release
-```
-
-With Nix:
-
-```sh
-nix shell nixpkgs#python3 --command python3 tests/verify_keyboard_bridge.py
-nix shell nixpkgs#dotnet-sdk_10 --command dotnet build src/Sts2KeyboardControllerBridge.csproj -c Release --no-restore
-```
-
-The built DLL will be at:
-
-```text
-src/bin/Release/Sts2KeyboardControllerBridge.dll
-```
-
-### Packaging a release zip
-
-From the repository root:
-
-```sh
-rm -rf dist
-mkdir -p dist/Sts2KeyboardControllerBridge
-
-cp src/bin/Release/Sts2KeyboardControllerBridge.dll \
-   dist/Sts2KeyboardControllerBridge/Sts2KeyboardControllerBridge.dll
-
-cp src/Sts2KeyboardControllerBridge.json \
-   dist/Sts2KeyboardControllerBridge/mod_manifest.json
-
-cd dist
-zip -r Sts2KeyboardControllerBridge-v0.2.0.zip Sts2KeyboardControllerBridge
-```
-
-The zip should contain this top-level folder:
-
-```text
-Sts2KeyboardControllerBridge/
-├── mod_manifest.json
-└── Sts2KeyboardControllerBridge.dll
-```
 
 ### Implementation overview
 
@@ -380,63 +324,9 @@ Calling initializer method ... ModEntry
 Finished mod initialization ...
 ```
 
-### 从源码构建
 
-前置要求：
 
-- .NET SDK 10，或与当前游戏版本兼容的 SDK。
-- Python 3，用于运行静态验证脚本。
-- 把本地《杀戮尖塔 2》的程序集复制到 `references/`：
-  - `sts2.dll`
-  - `GodotSharp.dll`
 
-不要分发游戏自带程序集。详见 `references/README.md`。
-
-构建：
-
-```sh
-python3 tests/verify_keyboard_bridge.py
-dotnet build src/Sts2KeyboardControllerBridge.csproj -c Release
-```
-
-使用 Nix：
-
-```sh
-nix shell nixpkgs#python3 --command python3 tests/verify_keyboard_bridge.py
-nix shell nixpkgs#dotnet-sdk_10 --command dotnet build src/Sts2KeyboardControllerBridge.csproj -c Release --no-restore
-```
-
-构建产物位置：
-
-```text
-src/bin/Release/Sts2KeyboardControllerBridge.dll
-```
-
-### 打包发布 zip
-
-在仓库根目录运行：
-
-```sh
-rm -rf dist
-mkdir -p dist/Sts2KeyboardControllerBridge
-
-cp src/bin/Release/Sts2KeyboardControllerBridge.dll \
-   dist/Sts2KeyboardControllerBridge/Sts2KeyboardControllerBridge.dll
-
-cp src/Sts2KeyboardControllerBridge.json \
-   dist/Sts2KeyboardControllerBridge/mod_manifest.json
-
-cd dist
-zip -r Sts2KeyboardControllerBridge-v0.2.0.zip Sts2KeyboardControllerBridge
-```
-
-zip 内部应该包含这个顶层文件夹：
-
-```text
-Sts2KeyboardControllerBridge/
-├── mod_manifest.json
-└── Sts2KeyboardControllerBridge.dll
-```
 
 ### 实现概览
 
