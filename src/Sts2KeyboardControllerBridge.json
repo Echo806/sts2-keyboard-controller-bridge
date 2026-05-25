@@ -1,0 +1,12 @@
+{
+  "id": "Sts2KeyboardControllerBridge",
+  "name": "STS2 Keyboard Controller Bridge",
+  "pck_name": "Sts2KeyboardControllerBridge",
+  "version": "0.2.0",
+  "author": "Hermes",
+  "description": "Maps keyboard keys to Slay the Spire 2 controller-style actions: WASD plus IJKL/FGBH/MP.",
+  "has_dll": true,
+  "has_pck": false,
+  "affects_gameplay": false,
+  "dependencies": []
+}

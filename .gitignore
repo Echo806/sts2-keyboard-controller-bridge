@@ -1,0 +1,14 @@
+src/bin/
+src/obj/
+dist/
+*.zip
+*.pdb
+
+# Local game assemblies used only for building. Do not redistribute.
+references/*.dll
+!references/README.md
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
