@@ -116,7 +116,7 @@ C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\Sts2Keyboard
 
 这是一个《杀戮尖塔 2》（Slay the Spire 2）模组，用来把键盘按键映射成游戏现有的手柄操作，让玩家可以用“类似 Xbox 手柄”的方式进行全键盘导航。
 
-这是一个早期但已经可以初步使用的无障碍 / QoL 桥接模组。它不依赖 Harmony 运行时补丁，而是通过 Godot `Node` 监听键盘输入，并注入 STS2/Godot 的 action 事件。
+
 
 ### 功能
 
