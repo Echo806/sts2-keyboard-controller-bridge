@@ -8,7 +8,7 @@ Language: [English](#english) | [中文](#中文)
 
 A Slay the Spire 2 mod that maps keyboard keys to controller-style actions, enabling keyboard-only navigation through the game's existing controller focus system.
 
-This project is an early, practical accessibility/QoL bridge. It avoids Harmony runtime patching and instead uses a Godot `Node` input listener that injects STS2/Godot action events.
+
 
 ### Features
 
@@ -109,75 +109,6 @@ C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\Sts2Keyboard
 
 5. Enable `STS2 Keyboard Controller Bridge` in the game's mod UI if needed.
 
-### Troubleshooting
-
-The mod writes a log file on Linux here:
-
-```text
-~/.config/SlayTheSpire2/logs/mod_log.txt
-```
-
-Useful expected lines:
-
-```text
-[STS2 Keyboard Controller Bridge] loaded; KeyboardBridgeProbe install scheduled on next ProcessFrame...
-[KeyboardBridgeProbe] ActivateAfterManualAdd; insideTree=True ... WindowInput/_Input/_UnhandledInput enabled...
-[PersistentKeyboardMappingPatch] applied and saved. ... disabled=25 total=25
-```
-
-If the mod seems loaded but keys do not work:
-
-1. Press F10 in-game.
-2. Check `mod_log.txt`.
-3. If F10 logs, the input node is receiving keys; the issue is likely action/focus behavior.
-4. If F10 does not log, verify the mod folder layout and whether the game loaded the DLL.
-
-Game discovery/loading evidence is usually in:
-
-```text
-~/.local/share/SlayTheSpire2/logs/godot.log
-```
-
-Look for lines like:
-
-```text
-Found mod manifest file .../mods/Sts2KeyboardControllerBridge/mod_manifest.json
-Loading assembly DLL .../Sts2KeyboardControllerBridge.dll
-Calling initializer method ... ModEntry
-Finished mod initialization ...
-```
-
-
-
-### Implementation overview
-
-Main files:
-
-| File | Purpose |
-|---|---|
-| `src/ModEntry.cs` | STS2 mod entry point. Schedules the bridge node on `SceneTree.ProcessFrame` and starts the persistent keyboard settings patch. Also contains the logger. |
-| `src/KeyboardActionMap.cs` | Maps keyboard keys to STS2/Godot action names. |
-| `src/KeyboardBridgeProbe.cs` | Godot `Node` that subscribes to `WindowInput`, captures key press/release events, activates controller focus mode, and injects `InputEventAction`s. |
-| `src/ControllerFocusActivator.cs` | Activates STS2 controller/focus mode before navigation/select actions. |
-| `src/PersistentKeyboardMappingPatch.cs` | Reflects into `NInputManager._keyboardInputMap`, sets all native keyboard shortcuts to `Key.None`, then invokes STS2's private `SaveKeyboardInputMapping()` method. |
-| `src/Sts2KeyboardControllerBridge.json` | Mod manifest source file; packaged as `mod_manifest.json`. |
-| `tests/verify_keyboard_bridge.py` | Static regression checks for mappings and important implementation invariants. |
-
-Why no Harmony:
-
-- Early experiments showed Harmony/MonoMod native detour failures on this Linux/NixOS runtime.
-- The current mod uses a no-Harmony Godot input-node approach for the main path.
-
-### Current limitations
-
-- This is an early usable build, not a complete polished accessibility mod.
-- It relies on STS2 internal action names and private fields, so game updates may break it.
-- It intentionally clears native keyboard shortcuts globally.
-- Some screens may still have controller-focus quirks inherited from STS2 itself.
-
-### License
-
-MIT. See `LICENSE`.
 
 ---
 
@@ -286,74 +217,4 @@ C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\Sts2Keyboard
 
 5. 如果游戏有模组启用界面，请启用 `STS2 Keyboard Controller Bridge`。
 
-### 故障排查
 
-Linux 下模组日志路径：
-
-```text
-~/.config/SlayTheSpire2/logs/mod_log.txt
-```
-
-正常情况下可以看到类似日志：
-
-```text
-[STS2 Keyboard Controller Bridge] loaded; KeyboardBridgeProbe install scheduled on next ProcessFrame...
-[KeyboardBridgeProbe] ActivateAfterManualAdd; insideTree=True ... WindowInput/_Input/_UnhandledInput enabled...
-[PersistentKeyboardMappingPatch] applied and saved. ... disabled=25 total=25
-```
-
-如果模组看起来已经加载，但按键无效：
-
-1. 在游戏里按 F10。
-2. 查看 `mod_log.txt`。
-3. 如果 F10 有日志，说明输入节点能收到键盘输入，问题更可能在 action 注入或焦点模式。
-4. 如果 F10 没有日志，检查模组目录结构，以及游戏是否加载了 DLL。
-
-游戏发现 / 加载模组的证据通常在：
-
-```text
-~/.local/share/SlayTheSpire2/logs/godot.log
-```
-
-可以搜索类似内容：
-
-```text
-Found mod manifest file .../mods/Sts2KeyboardControllerBridge/mod_manifest.json
-Loading assembly DLL .../Sts2KeyboardControllerBridge.dll
-Calling initializer method ... ModEntry
-Finished mod initialization ...
-```
-
-
-
-
-
-### 实现概览
-
-主要文件：
-
-| 文件 | 作用 |
-|---|---|
-| `src/ModEntry.cs` | STS2 模组入口。通过 `SceneTree.ProcessFrame` 安装桥接节点，并启动持久化键位设置补丁。也包含日志工具。 |
-| `src/KeyboardActionMap.cs` | 定义键盘按键到 STS2/Godot action 名称的映射。 |
-| `src/KeyboardBridgeProbe.cs` | Godot `Node`，订阅 `WindowInput`，捕获按键按下/释放，激活手柄焦点模式，并注入 `InputEventAction`。 |
-| `src/ControllerFocusActivator.cs` | 在导航 / 选择类 action 注入前激活 STS2 的 controller/focus 模式。 |
-| `src/PersistentKeyboardMappingPatch.cs` | 反射访问 `NInputManager._keyboardInputMap`，把所有原生键盘快捷键设为 `Key.None`，再调用 STS2 私有方法 `SaveKeyboardInputMapping()` 保存。 |
-| `src/Sts2KeyboardControllerBridge.json` | 模组 manifest 源文件，打包时复制为 `mod_manifest.json`。 |
-| `tests/verify_keyboard_bridge.py` | 静态回归检查脚本，用来验证映射和关键实现约束。 |
-
-为什么不用 Harmony：
-
-- 早期实验发现 Harmony/MonoMod native detour 在当前 Linux/NixOS 运行环境里会失败。
-- 当前主路径使用不依赖 Harmony 的 Godot 输入节点方案。
-
-### 当前限制
-
-- 这是早期可用版本，不是完整打磨过的无障碍模组。
-- 它依赖 STS2 内部 action 名称和私有字段，游戏更新后可能失效。
-- 它会有意清空游戏原生键盘快捷键，而且是全局设置。
-- 部分界面可能仍然存在 STS2 自身的 controller focus 行为限制。
-
-### 许可证
-
-MIT。见 `LICENSE`。
