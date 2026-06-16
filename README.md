@@ -57,7 +57,7 @@ Slay the Spire 2/
         └── keybinds.json
 ```
 
-Start from `keybinds.example.json`, rename or copy it to `keybinds.json`, then edit the key names. Example:
+Edit the key names in keybinds.json. Example:
 
 ```json
 {
@@ -89,7 +89,7 @@ Notes:
 - Key names are Godot `Key` enum names without the `Key.` prefix. Examples: `Enter`, `KpEnter`, `Space`, `Escape`, `Tab`, `Up`, `Down`, `Left`, `Right`, `Key1`, `F1`.
 - Invalid action names or invalid key names are ignored and written to the mod log.
 
-### Important behavior: native keyboard shortcuts are cleared
+### Attention: native keyboard shortcuts are cleared
 
 This mod persistently clears STS2's built-in keyboard shortcuts by setting the game's native keyboard mapping to `Key.None` through STS2's own `SaveKeyboardInputMapping()` path.
 
@@ -114,7 +114,7 @@ Effect:
 1. Download the release zip, for example:
 
 ```text
-Sts2KeyboardControllerBridge-v0.2.0.zip
+Sts2KeyboardControllerBridge-v0.3.0.zip
 ```
 
 2. Extract it.
@@ -129,7 +129,7 @@ Slay the Spire 2/
     └── Sts2KeyboardControllerBridge/
         ├── mod_manifest.json
         ├── Sts2KeyboardControllerBridge.dll
-        └── keybinds.json   # optional; copy from keybinds.example.json
+        └── keybinds.json  
 ```
 
 Linux Steam path is often:
@@ -225,7 +225,7 @@ Slay the Spire 2/
         └── keybinds.json
 ```
 
-可以从仓库里的 `keybinds.example.json` 复制一份，重命名为 `keybinds.json`，然后编辑按键名。例如：
+然后在`keybinds.json`编辑按键名。例如：
 
 ```json
 {
@@ -257,7 +257,7 @@ Slay the Spire 2/
 - 按键名使用 Godot `Key` 枚举名，但不要写 `Key.` 前缀。常见例子：`Enter`, `KpEnter`, `Space`, `Escape`, `Tab`, `Up`, `Down`, `Left`, `Right`, `Key1`, `F1`。
 - 无效 action 名或无效按键名会被忽略，并写入模组日志。
 
-### 重要行为：会清空游戏原生键盘快捷键
+### 注意：会清空游戏原生键盘快捷键
 
 本模组会通过 STS2 自己的 `SaveKeyboardInputMapping()` 保存路径，把游戏内置的键盘快捷键持久化设置为 `Key.None`。
 
@@ -280,7 +280,7 @@ Slay the Spire 2/
 1. 从 Releases 下载发布包，例如：
 
 ```text
-Sts2KeyboardControllerBridge-v0.2.0.zip
+Sts2KeyboardControllerBridge-v0.3.0.zip
 ```
 
 2. 解压。
@@ -295,7 +295,7 @@ Slay the Spire 2/
     └── Sts2KeyboardControllerBridge/
         ├── mod_manifest.json
         ├── Sts2KeyboardControllerBridge.dll
-        └── keybinds.json   # 可选；从 keybinds.example.json 复制
+        └── keybinds.json  
 ```
 
 Linux Steam 常见路径：
