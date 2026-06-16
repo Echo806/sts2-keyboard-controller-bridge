@@ -1,0 +1,19 @@
+{
+  "ui_up": ["W", "Up"],
+  "ui_down": ["S", "Down"],
+  "ui_left": ["A", "Left"],
+  "ui_right": ["D", "Right"],
+
+  "ui_accept": ["I"],
+  "ui_cancel": ["L"],
+  "ui_select": ["K"],
+  "mega_top_panel": ["J"],
+
+  "mega_view_draw_pile": ["F"],
+  "mega_view_discard_pile": ["G"],
+  "mega_view_exhaust_pile_and_tab_right": ["H"],
+  "mega_view_deck_and_tab_left": ["B"],
+
+  "mega_view_map": ["M"],
+  "mega_pause_and_back": ["P"]
+}

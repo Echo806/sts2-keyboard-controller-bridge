@@ -8,32 +8,59 @@ probe_src = (root / "src" / "KeyboardBridgeProbe.cs").read_text()
 entry_src = (root / "src" / "ModEntry.cs").read_text()
 patch_src = (root / "src" / "PersistentKeyboardMappingPatch.cs").read_text()
 
-expected_cases = {
-    'Key.W': 'ui_up',
-    'Key.S': 'ui_down',
-    'Key.A': 'ui_left',
-    'Key.D': 'ui_right',
-    'Key.I': 'ui_accept',
-    'Key.L': 'ui_cancel',
-    'Key.K': 'ui_select',
-    'Key.J': 'mega_top_panel',
-    'Key.F': 'mega_view_draw_pile',
-    'Key.G': 'mega_view_discard_pile',
-    'Key.H': 'mega_view_exhaust_pile_and_tab_right',
-    'Key.B': 'mega_view_deck_and_tab_left',
-    'Key.M': 'mega_view_map',
-    'Key.P': 'mega_pause_and_back',
+expected_default_bindings = {
+    'ui_up': ['Key.W', 'Key.Up'],
+    'ui_down': ['Key.S', 'Key.Down'],
+    'ui_left': ['Key.A', 'Key.Left'],
+    'ui_right': ['Key.D', 'Key.Right'],
+    'ui_accept': ['Key.I'],
+    'ui_cancel': ['Key.L'],
+    'ui_select': ['Key.K'],
+    'mega_top_panel': ['Key.J'],
+    'mega_view_draw_pile': ['Key.F'],
+    'mega_view_discard_pile': ['Key.G'],
+    'mega_view_exhaust_pile_and_tab_right': ['Key.H'],
+    'mega_view_deck_and_tab_left': ['Key.B'],
+    'mega_view_map': ['Key.M'],
+    'mega_pause_and_back': ['Key.P'],
 }
 
 errors = []
-for key, action in expected_cases.items():
-    pattern = re.compile(rf"\b{re.escape(key)}\b[^=\n]*=>\s*new BridgeAction\(\"{re.escape(action)}\"")
-    if not pattern.search(map_src):
-        errors.append(f"missing mapping {key} -> {action}")
+if 'System.Text.Json' not in map_src:
+    errors.append('KeyboardActionMap must use System.Text.Json to load user keybinds.json')
+if 'keybinds.json' not in map_src:
+    errors.append('KeyboardActionMap must look for keybinds.json next to the mod DLL')
+if 'AppContext.BaseDirectory' not in map_src:
+    errors.append('KeyboardActionMap must resolve keybinds.json from AppContext.BaseDirectory')
+if 'DefaultBindings' not in map_src:
+    errors.append('KeyboardActionMap must keep built-in default bindings when config is missing or invalid')
+if 'Logger.Log' not in map_src:
+    errors.append('KeyboardActionMap must log config load/fallback problems')
+if 'Enum.TryParse<Key>' not in map_src:
+    errors.append('KeyboardActionMap must parse Godot Key names from JSON strings')
+if 'ActivatesFocusMode: false' not in map_src:
+    errors.append('KeyboardActionMap must preserve no-focus behavior for map and pause actions')
 
-for legacy_key in ['Key.Enter', 'Key.KpEnter', 'Key.Space', 'Key.Escape', 'Key.Backspace', 'Key.Tab']:
-    if legacy_key in map_src:
-        errors.append(f"legacy MVP key should not be primary controller mapping anymore: {legacy_key}")
+sample_path = root / 'keybinds.example.json'
+if not sample_path.exists():
+    errors.append('repository must include keybinds.example.json for users to copy/edit')
+else:
+    sample_text = sample_path.read_text()
+    for action, keys in expected_default_bindings.items():
+        if f'"{action}"' not in sample_text:
+            errors.append(f'keybinds.example.json missing action {action}')
+        for key in keys:
+            user_key = key.removeprefix('Key.')
+            if f'"{user_key}"' not in sample_text:
+                errors.append(f'keybinds.example.json missing default key {user_key} for {action}')
+
+for action, keys in expected_default_bindings.items():
+    if f'"{action}"' not in map_src:
+        errors.append(f'missing default action {action}')
+    for key in keys:
+        user_key = key.removeprefix('Key.')
+        if f'"{user_key}"' not in map_src:
+            errors.append(f'missing default key {user_key} for {action}')
 
 if 'var bridgeAction = KeyboardActionMap.FromKeyEvent(key);' not in probe_src:
     errors.append('KeyboardBridgeProbe must route normal keys through KeyboardActionMap, not only F10/F11/F12 diagnostics')
